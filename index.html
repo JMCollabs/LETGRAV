@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Letter Gravity</title>
+    <style>
+        /* Base Reset & Typography */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #0d0d11;
+            color: #f5f5f7;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            display: block; 
+            padding: 2rem 1rem;
+        }
+
+        /* Subtle Background Pattern */
+        .bg-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            opacity: 0.03; 
+            pointer-events: none;
+        }
+
+        /* Content Wrapper */
+        .main-wrapper {
+            position: relative;
+            z-index: 2;
+            max-width: 950px;
+            margin: 0 auto;
+        }
+
+        /* ==========================================================================
+           HEADER STYLES
+           ========================================================================== */
+        .header-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            padding: 2.5rem 2rem;
+            margin-bottom: 2.5rem; 
+            text-align: center;
+        }
+
+        .header-logo-side {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            max-width: 240px;
+        }
+
+        .header-logo {
+            width: 100%;
+            height: auto;
+            border-radius: 50%;
+            box-shadow: 0 0 30px rgba(147, 112, 219, 0.2);
+            font-size: 5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
+            aspect-ratio: 1;
+            border-radius: 50%;
+        }
+
+        .header-text-side {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .brand-title {
+            font-size: 3.5rem;
+            font-weight: 900;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            margin-bottom: 0.25rem;
+            background: linear-gradient(180deg, #ffffff 0%, #a1a1aa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .brand-tagline {
+            font-size: 1.35rem;
+            font-weight: 300;
+            font-style: italic;
+            color: #a78bfa;
+            margin-bottom: 1.25rem;
+        }
+
+        .main-description {
+            font-size: 1.15rem;
+            color: #e4e4e7;
+            margin-bottom: 1.25rem;
+            line-height: 1.5;
+        }
+
+        .divider {
+            width: 60px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(167, 139, 250, 0.5), transparent);
+            margin: 0.5rem auto 1.25rem auto;
+        }
+
+        .value-proposition {
+            font-size: 1.1rem;
+            color: #a1a1aa;
+            margin-bottom: 0.5rem;
+        }
+
+        .features-list {
+            font-size: 0.95rem;
+            color: #71717a;
+            margin-bottom: 2rem;
+        }
+
+        .cta-container {
+            display: inline-block;
+            transition: transform 0.3s ease, filter 0.3s ease;
+        }
+
+        .cta-container:hover {
+            transform: translateY(-3px);
+            filter: drop-shadow(0 0 15px rgba(167, 139, 250, 0.3));
+        }
+
+        .app-store-btn {
+            display: block;
+            height: 48px;
+            width: auto;
+        }
+
+        @media (min-width: 768px) {
+            .header-container {
+                flex-direction: row;
+                text-align: left;
+                padding: 3.5rem 3rem;
+                gap: 3.5rem;
+            }
+
+            .header-text-side {
+                align-items: flex-start;
+            }
+
+            .divider {
+                margin: 0.5rem 0 1.25rem 0;
+                background: linear-gradient(90deg, rgba(167, 139, 250, 0.5), transparent);
+            }
+        }
+
+        /* ==========================================================================
+           ABOUT SECTION
+           ========================================================================== */
+        #about {
+            margin-bottom: 4rem;
+            padding: 0 1rem;
+        }
+
+        #about h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 0.25rem;
+            line-height: 1.2;
+        }
+
+        #about .sub-text {
+            color: #a1a1aa;
+            font-size: 1.1rem;
+            line-height: 1.4;
+            margin-bottom: 1.75rem;
+        }
+
+        .about-hr {
+            border: 0;
+            height: 1px;
+            background: linear-gradient(90deg, rgba(255,255,255,0.15), transparent);
+            margin-bottom: 2rem;
+        }
+
+        .about-content {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 20px;
+            padding: 2rem;
+            color: #e4e4e7;
+            line-height: 1.8;
+            font-size: 1.05rem;
+        }
+
+        .about-content p {
+            margin-bottom: 1rem;
+        }
+
+        .about-content p:last-child {
+            margin-bottom: 0;
+        }
+
+        .section-hr {
+            border: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            margin: 4rem 0;
+        }
+
+        /* Mobile Responsive Adjustments */
+        @media (max-width: 768px) {
+            .brand-title {
+                font-size: 2.5rem;
+                letter-spacing: 0.1em;
+            }
+            .brand-tagline {
+                font-size: 1.2rem;
+            }
+            .header-logo {
+                font-size: 3.5rem;
+            }
+        }
+
+        footer {
+            text-align: center;
+            padding-top: 2rem;
+            margin-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        footer a {
+            color: #a78bfa;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        footer a:hover {
+            color: #c4b5fd;
+        }
+
+        footer p {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+
+    <svg class="bg-pattern" xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80">
+        <g fill="none" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="40" cy="20" r="8"/>
+            <circle cx="25" cy="45" r="6"/>
+            <circle cx="55" cy="45" r="6"/>
+            <line x1="40" y1="28" x2="40" y2="40"/>
+            <line x1="40" y1="40" x2="25" y2="45"/>
+            <line x1="40" y1="40" x2="55" y2="45"/>
+        </g>
+    </svg>
+
+    <div class="main-wrapper">
+
+        <header class="header-container">
+            <div class="header-logo-side">
+                <div class="header-logo">⬇️</div>
+            </div>
+
+            <div class="header-text-side">
+                <h1 class="brand-title">Letter Gravity</h1>
+                <p class="brand-tagline">Arrange falling blocks into words</p>
+                <p class="main-description">A freestyle word game where you turn gravity into wordplay.</p>
+                <div class="divider"></div>
+                <p class="value-proposition">Simple. Addictive. No distractions.</p>
+                <p class="features-list">No Ads • No Tracking • Pure Gameplay</p>
+                
+                <div class="cta-container">
+                    <a href="#" target="_blank">
+                        <img src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/en-us" alt="Download on the App Store" class="app-store-btn">
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <!-- ==========================================================================
+           ABOUT SECTION
+           ========================================================================== -->
+        <section id="about">
+            <h2>How It Works</h2>
+            <p class="sub-text">Master the art of word gravity.</p>
+            <div class="about-hr"></div>
+
+            <div class="about-content">
+                <p>Letter Gravity combines strategic thinking with quick reflexes. Watch as letter blocks fall down your screen. Your goal: arrange them into valid words before they stack too high.</p>
+                <p>The higher you stack, the harder it gets. But that's the fun of it. Every game is a fresh challenge, and every word you make is a victory. Whether you're playing for a few minutes or hours, Letter Gravity keeps you engaged with pure, distraction-free gameplay.</p>
+                <p>No ads interrupting your flow. No data collection tracking your moves. Just you, the falling letters, and the satisfaction of creating words under pressure.</p>
+            </div>
+        </section>
+
+        <hr class="section-hr">
+                
+        <a href="mailto:fbirdgator@gmail.com?subject=Letter%20Gravity%20Feedback" 
+           style="display: inline-block; 
+                  padding: 10px 20px; 
+                  background-color: #24292e; 
+                  color: #ffffff; 
+                  text-decoration: none; 
+                  border-radius: 5px; 
+                  font-weight: bold; 
+                  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;">
+            Send Feedback
+        </a>
+
+        <footer>
+            <a href="privacy-policy.html">Privacy Policy</a>
+            <p style="text-align: center; margin-top: 2rem; font-size: 0.9rem; color: #666;">
+                &copy; 2026 jmc_Letter Gravity. All rights reserved.
+            </p>
+        </footer>
+
+    </div>
+</body>
+</html>
